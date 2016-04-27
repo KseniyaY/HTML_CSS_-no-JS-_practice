@@ -112,7 +112,7 @@
 		</nav>
 		
 		<main class="content">
-			<div class="map" style="width:1440px;height:1000px">
+			<div class="map">
 				<!-- <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12099.973904746485!2d-73.99905146198762!3d40.69614132609919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a36f57f83e7%3A0xe6e14ba9ee8d83a6!2sHigh+Street!5e0!3m2!1sru!2sua!4v1461060686200" width="800" height="600" frameborder="0" style="border:0" allowfullscreen></iframe> -->
 			</div>
 			<div class="contactBox">
@@ -183,6 +183,20 @@
   		var mapProp = {
     	center:myCenter,
     	zoom:13,
+    	panControl:true,
+    	zoomControl:true,
+    	mapTypeControl:true,
+    	mapTypeControlOptions: {
+    		style:google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+    		position:google.maps.ControlPosition.TOP_LEFT
+		},
+    	scaleControl:true,
+    	streetViewControl:true,
+    	overviewMapControl:true,
+    	rotateControl:true,
+    	zoomControlOptions: {
+      		style:google.maps.ZoomControlStyle.DEFAULT
+    	}, 
     	mapTypeId:google.maps.MapTypeId.ROADMAP
  		};  
 
@@ -194,6 +208,32 @@
   		});
 
 		marker.setMap(map);
+
+		var infowindow = new google.maps.InfoWindow({
+ 			content:"We are here!"
+  		});
+
+  		//if we need to add infoWindow to the marker at once
+		// infowindow.open(map,marker);
+
+
+		////if we need to add infoWindow to the marker after clicking on it
+		google.maps.event.addListener(marker, 'click', function() {
+  			infowindow.open(map,marker);
+  		});
+
+		// Zoom to 15 when clicking on marker
+		google.maps.event.addListener(marker,'click',function() {
+  			map.setZoom(17);
+  			map.setCenter(marker.getPosition());
+  		});
+
+  		google.maps.event.addListener(map,'center_changed',function() {
+			// 3 seconds after the center of the map has changed, pan back to the marker
+  			window.setTimeout(function() {
+   				 map.panTo(marker.getPosition());
+  			},5000);
+  		});
 	}
 
 	google.maps.event.addDomListener(window, 'load', initialize);
